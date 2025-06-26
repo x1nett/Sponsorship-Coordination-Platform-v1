@@ -1,0 +1,122 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Sign Up</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">    
+    </head>
+    <body>
+        <section class="vh-100">
+            <div class="container-fluid h-custom">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-md-9 col-lg-6 col-xl-5">
+                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+                        class="img-fluid" alt="Sample image">
+                    </div>
+                    <div class="col-md-9 col-lg-6 col-xl-5 offset-xl-1">
+                        {% if error %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ error }}
+                            </div>
+                        {% endif %}
+                        <h1 class="mt-5 mb-4" >Sign Up</h1>
+                        <form method="POST">
+                            
+                            <ul>
+                                <li><label class="form-label">Only Alphabets, Numbers and Underscore allowed in Name</label>
+                                <li><label class="form-label">Password must be at least 8 characters long</label>
+                                <li><label class="form-label">Password must contain at least 1 Uppercase and Lowercase letter</label>
+                                <li><label class="form-label">Password must contain at least 1 Number and a Special character</label>
+                            </ul>
+
+                            <!-- Name input -->
+                            <div data-mdb-input-init class="form-outline mb-4">
+                                <input type="text" name="name" id="Full_Name" class="form-control" required maxlength="45" pattern="^[\w\-\s]+$"/>
+                                <label class="form-label" for="Full_Name">Full Name</label>
+                            </div>
+                            
+                            <!-- Email input -->
+                            <div data-mdb-input-init class="form-outline mb-4">
+                                <input type="email" id="Email" name="email" class="form-control" required/>
+                                <label class="form-label" for="Email">Email address</label>
+                            </div>
+                        
+                            <!-- Password input -->
+                            <div data-mdb-input-init class="form-outline mb-4">
+                                <input type="password" id="Pass" name="pass" class="form-control" required minlength="8" pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,}$"/>
+                                <label class="form-label" for="Pass">Password</label>
+                            </div>
+
+                            <!-- Password input -->
+                            <div data-mdb-input-init class="form-outline mb-4">
+                                <input type="password" id="Con_Pass" name="con_pass" class="form-control" required minlength="8"/>
+                                <label class="form-label" for="con_pass">Confirm Password</label>
+                            </div>
+
+                            <!-- Industry input -->
+                             <div data-mdb-input-init class="form-outline mb-4">
+                                <select id="Industry" name="industry" class="form-control" required>
+                                    <option value="" disabled selected>Choose your Industry</option>
+                                    <option value="Technology">Technology</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Healthcare">Healthcare</option>
+                                    <option value="Education">Education</option>
+                                    <option value="Manufacturing">Manufacturing</option>
+                                    <option value="Retail">Retail</option>
+                                    <option value="Real-Estate">Real Estate</option>
+                                    <option value="Entertainment">Entertainment</option>
+                                    <option value="Transportation">Transportation</option>
+                                    <option value="Agriculture">Agriculture</option>
+                                    <option value="Automotive">Automotive</option>
+                                    <option value="Construction">Construction</option>
+                                    <option value="Energy">Energy</option>
+                                    <option value="Food-and-Beverage">Food and Beverage</option>
+                                    <option value="Hospitality">Hospitality</option>
+                                    <option value="Insurance">Insurance</option>
+                                    <option value="Media">Media</option>
+                                    <option value="Pharmaceuticals">Pharmaceuticals</option>
+                                    <option value="Professional-Services">Professional Services</option>
+                                    <option value="Public-Sector">Public Sector</option>
+                                    <option value="Telecommunications">Telecommunications</option>
+                                    <option value="Utilities">Utilities</option>
+                                    <option value="Logistics">Logistics</option>
+                                    <option value="Mining">Mining</option>
+                                    <option value="Non-Profit">Non-Profit</option>
+                                    <option value="Aerospace">Aerospace</option>
+                                    <option value="Biotechnology">Biotechnology</option>
+                                    <option value="Chemicals">Chemicals</option>
+                                    <option value="Consulting">Consulting</option>
+                                    <option value="Defense">Defense</option>
+                                    <option value="Fashion">Fashion</option>
+                                    <option value="Furniture">Furniture</option>
+                                    <option value="Human-Resources">Human Resources</option>
+                                    <option value="Legal">Legal</option>
+                                    <option value="Luxury-Goods">Luxury Goods</option>
+                                    <option value="Packaging">Packaging</option>
+                                    <option value="Publishing">Publishing</option>
+                                    <option value="Recreation">Recreation</option>
+                                    <option value="Security">Security</option>
+                                    <option value="Sports">Sports</option>
+                                    <option value="Tourism">Tourism</option>
+                                    <option value="Waste-Management">Waste Management</option>
+                                    <option value="Wholesale">Wholesale</option>
+                                </select>
+                                <label class="form-label" for="Industry">Industry</label>
+                            </div>
+                        
+                            <!-- Submit button -->
+                            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">Sign up</button>
+                        
+                            <!-- Login buttons -->
+                            <div class="text-center">
+                            <p>Already Registered? <a href="{{ url_for('login') }}">Sign In</a></p>
+                            <p>Want to register as an influencer? <a href="{{ url_for('register_influencer') }}">Sign Up</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    </body>
+</html>
+

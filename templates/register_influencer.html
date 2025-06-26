@@ -1,0 +1,133 @@
+        <!DOCTYPE HTML>
+        <html>
+            <head>
+                <title>Sign Up</title>
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+            </head>
+            <body>
+                <section class="vh-100">
+                    <div class="container-fluid h-custom">
+                        <div class="row d-flex justify-content-center align-items-center h-100">
+                            <div class="col-md-9 col-lg-6 col-xl-5">
+                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+                                class="img-fluid" alt="Sample image">
+                            </div>
+                            <div class="col-md-9 col-lg-6 col-xl-5 offset-xl-1">
+                                {% if error %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ error }}
+                                </div>
+                                {% endif %}
+                                <h1 class="mt-5 mb-4" >Sign Up</h1>
+                                <form method="POST">
+                                    
+                                    <ul>
+                                        <li><label class="form-label">Only Alphabets, Numbers and Underscore allowed in Name</label>
+                                        <li><label class="form-label">Password must be at least 8 characters long</label>
+                                        <li><label class="form-label">Password must contain at least 1 Uppercase and Lowercase letter</label>
+                                        <li><label class="form-label">Password must contain at least 1 Number and a Special character</label>
+                                        <li><label class="form-label">Reach must be a number greater than 0</label>
+                                    </ul>
+                                    
+                                    <!-- Name input -->
+                                    <div data-mdb-input-init class="form-outline mb-4">
+                                        <input type="text" name="name" id="Full_Name" class="form-control" required maxlength="45" pattern="^[a-zA-Z0-9_]+"/>
+                                        <label class="form-label" for="Full_Name">Full Name</label>
+                                    </div>
+                                    
+                                    <!-- Email input -->
+                                    <div data-mdb-input-init class="form-outline mb-4">
+                                        <input type="email" id="Email" name="email" class="form-control" />
+                                        <label class="form-label" for="Email">Email address</label>
+                                    </div>
+                                
+                                    <!-- Password input -->
+                                    <div data-mdb-input-init class="form-outline mb-4">
+                                        <input type="password" id="Pass" name="pass" class="form-control" required minlength="8" pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,}$"/>
+                                        <label class="form-label" for="Pass">Password</label>
+                                    </div>
+        
+                                    <!-- Password input -->
+                                    <div data-mdb-input-init class="form-outline mb-4">
+                                        <input type="password" id="Con_Pass" name="con_pass" class="form-control" required minlength="8"/>
+                                        <label class="form-label" for="con_pass">Confirm Password</label>
+                                    </div>
+                                    
+                                    <!-- Category input -->
+                                    <div data-mdb-input-init class="form-outline mb-4">
+                                        <select id="category" name="category" class="form-control" required>
+                                            <option value="" disabled selected>Choose your Category</option>
+                                            <option value="Beauty">Beauty</option>
+                                            <option value="Fashion">Fashion</option>
+                                            <option value="Fitness">Fitness</option>
+                                            <option value="Health">Health</option>
+                                            <option value="Travel">Travel</option>
+                                            <option value="Food">Food</option>
+                                            <option value="Lifestyle">Lifestyle</option>
+                                            <option value="Gaming">Gaming</option>
+                                            <option value="Technology">Technology</option>
+                                            <option value="Photography">Photography</option>
+                                            <option value="Music">Music</option>
+                                            <option value="Parenting">Parenting</option>
+                                            <option value="Finance">Finance</option>
+                                            <option value="Education">Education</option>
+                                            <option value="Sports">Sports</option>
+                                            <option value="Art">Art</option>
+                                            <option value="Home-Decor">Home Decor</option>
+                                            <option value="Pets">Pets</option>
+                                            <option value="Automotive">Automotive</option>
+                                            <option value="Books">Books</option>
+                                            <option value="DIY">DIY</option>
+                                            <option value="Environment">Environment</option>
+                                            <option value="Entertainment">Entertainment</option>
+                                            <option value="Business">Business</option>
+                                            <option value="Spirituality">Spirituality</option>
+                                            <option value="Dating">Dating</option>
+                                            <option value="Career">Career</option>
+                                            <option value="Event-Planning">Event Planning</option>
+                                            <option value="Gaming-Cosplay">Gaming Cosplay</option>
+                                            <option value="Luxury">Luxury</option>
+                                            <option value="Outdoors">Outdoors</option>
+                                            <option value="Wellness">Wellness</option>
+                                            <option value="Mental-Health">Mental Health</option>
+                                            <option value="Non-Profit">Non-Profit</option>
+                                            <option value="Comedy">Comedy</option>
+                                            <option value="News">News</option>
+                                            <option value="Personal-Development">Personal Development</option>
+                                            <option value="Relationship">Relationship</option>
+                                            <option value="Social-Justice">Social Justice</option>
+                                            <option value="Sustainable-Living">Sustainable Living</option>
+                                            <option value="Tech-Gadgets">Tech Gadgets</option>
+                                            <option value="Videography">Videography</option>
+                                            <option value="Yoga">Yoga</option>
+                                            <option value="Crypto">Crypto</option>
+                                            <option value="Investment">Investment</option>
+                                            <option value="Real-Estate">Real Estate</option>
+                                        </select>
+                                        <label class="form-label" for="category">Category</label>
+                                    </div>
+
+                                    <!-- Reach input -->
+                                    <div data-mdb-input-init class="form-outline mb-4">
+                                        <input type="number" id="Reach" name="reach" class="form-control" required maxlength="45" pattern="^[0-9]+$"/>
+                                        <label class="form-label" for="Reach">Reach</label>
+                                    </div>
+
+                                    <!-- Submit button -->
+                                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">Sign up</button>
+                                
+                                    <!-- Login buttons -->
+                                    <div class="text-center">
+                                    <p>Already Registered? <a href="{{ url_for('login') }}">Sign In</a></p>
+                                    <p>Want to register as a Sponsor? <a href="{{ url_for('register_sponsor') }}">Sign Up</a></p>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+            </body>
+        </html>
+        
+        

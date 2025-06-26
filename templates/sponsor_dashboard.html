@@ -1,0 +1,1068 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsor Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4bb543;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            margin-top: 70px;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: white !important;
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            color: var(--primary-color) !important;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--dark-color) !important;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-color) !important;
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: 600;
+            border-radius: 10px 10px 0 0 !important;
+        }
+
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+        }
+
+        .progress-bar {
+            background-color: var(--primary-color);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(67, 97, 238, 0.2);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .dashboard-stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 200px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card h3 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #adb5bd;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h4 {
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: 10px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+        }
+
+        .alert {
+            border-radius: 8px;
+        }
+
+        .pagination .page-item .page-link {
+            border-radius: 8px;
+            margin: 0 3px;
+            color: var(--primary-color);
+            border: 1px solid #e0e0e0;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-stats {
+                flex-direction: column;
+            }
+
+            .stat-card {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Error message display -->
+{% if "success" in error %}
+<div class="alert alert-success alert-dismissible fade show mx-3 mt-3" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i> {{ error }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% elif error %}
+<div class="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ error }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+<!-- Flag message display -->
+{% if flag %}
+<div class="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
+    <i class="bi bi-flag-fill me-2"></i>
+    <strong>You have been flagged</strong>. Kindly make the below changes before your profile can be activated again.<br>
+    <strong>Reason:</strong> {{ flag.reason }}
+</div>
+{% endif %}
+
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="bi bi-bullseye me-2"></i>Sponsor Dashboard
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#Profile">
+                        <i class="bi bi-person-circle me-1"></i> Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#Campaigns">
+                        <i class="bi bi-megaphone me-1"></i> Campaigns
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#Ad_Requests">
+                        <i class="bi bi-envelope-paper me-1"></i> Ad Requests
+                    </a>
+                </li>
+                <li class="nav-item">
+                    {% if flag %}
+                    <a class="nav-link disabled">
+                        <i class="bi bi-search me-1"></i> Find Influencers
+                    </a>
+                    {% else %}
+                    <a class="nav-link" href="{{ url_for('search') }}">
+                        <i class="bi bi-search me-1"></i> Find Influencers
+                    </a>
+                    {% endif %}
+                </li>
+                <li class="nav-item">
+                    {% if flag %}
+                    <a class="nav-link disabled">
+                        <i class="bi bi-graph-up me-1"></i> Stats
+                    </a>
+                    {% else %}
+                    <a class="nav-link" href="{{ url_for('stats') }}">
+                        <i class="bi bi-graph-up me-1"></i> Stats
+                    </a>
+                    {% endif %}
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">
+                        <i class="bi bi-box-arrow-right me-1"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+    <!-- Profile Page -->
+    <div id="Profile" class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title">
+                <i class="bi bi-person-circle me-2"></i>My Profile
+            </h2>
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                <i class="bi bi-pencil-square me-1"></i> Edit Profile
+            </button>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                                <i class="bi bi-person-fill text-primary" style="font-size: 2rem;"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0">{{ sponsor.name }}</h3>
+                                <span class="badge bg-primary">{{ sponsor.industry }}</span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="mb-2"><i class="bi bi-envelope-fill me-2 text-primary"></i> <strong>Email:</strong> {{ sponsor.email }}</p>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="dashboard-stats">
+                            <div class="stat-card">
+                                <i class="bi bi-megaphone text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                <h3>{{ campaigns.total }}</h3>
+                                <p>Total Campaigns</p>
+                            </div>
+                            <div class="stat-card">
+                                <i class="bi bi-envelope-paper text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                <h3>{{ ad_requests.total }}</h3>
+                                <p>Total Ad Requests</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Profile Modal -->
+        <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="POST" id="edit_profile">
+                        <div class="modal-body">
+                            <input type="hidden" name="form_id" value="edit_profile">
+
+                            <div class="mb-3">
+                                <label for="Full_Name" class="form-label">Full Name</label>
+                                <input type="text" name="name" id="Full_Name" value="{{ sponsor.name }}" class="form-control" maxlength="45" pattern="^[\w\-\s]+$" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="Industry" class="form-label">Industry</label>
+                                <select id="Industry" name="industry" class="form-select" required>
+                                    <option value="{{ sponsor.industry }}" selected>{{ sponsor.industry }}</option>
+                                    <option value="Technology">Technology</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Healthcare">Healthcare</option>
+                                    <option value="Education">Education</option>
+                                    <option value="Manufacturing">Manufacturing</option>
+                                    <option value="Retail">Retail</option>
+                                    <option value="Real-Estate">Real Estate</option>
+                                    <option value="Entertainment">Entertainment</option>
+                                    <option value="Transportation">Transportation</option>
+                                    <option value="Agriculture">Agriculture</option>
+                                    <option value="Automotive">Automotive</option>
+                                    <option value="Construction">Construction</option>
+                                    <option value="Energy">Energy</option>
+                                    <option value="Food-and-Beverage">Food and Beverage</option>
+                                    <option value="Hospitality">Hospitality</option>
+                                    <option value="Insurance">Insurance</option>
+                                    <option value="Media">Media</option>
+                                    <option value="Pharmaceuticals">Pharmaceuticals</option>
+                                    <option value="Professional-Services">Professional Services</option>
+                                    <option value="Public-Sector">Public Sector</option>
+                                    <option value="Telecommunications">Telecommunications</option>
+                                    <option value="Utilities">Utilities</option>
+                                    <option value="Logistics">Logistics</option>
+                                    <option value="Mining">Mining</option>
+                                    <option value="Non-Profit">Non-Profit</option>
+                                    <option value="Aerospace">Aerospace</option>
+                                    <option value="Biotechnology">Biotechnology</option>
+                                    <option value="Chemicals">Chemicals</option>
+                                    <option value="Consulting">Consulting</option>
+                                    <option value="Defense">Defense</option>
+                                    <option value="Fashion">Fashion</option>
+                                    <option value="Furniture">Furniture</option>
+                                    <option value="Human-Resources">Human Resources</option>
+                                    <option value="Legal">Legal</option>
+                                    <option value="Luxury-Goods">Luxury Goods</option>
+                                    <option value="Packaging">Packaging</option>
+                                    <option value="Publishing">Publishing</option>
+                                    <option value="Recreation">Recreation</option>
+                                    <option value="Security">Security</option>
+                                    <option value="Sports">Sports</option>
+                                    <option value="Tourism">Tourism</option>
+                                    <option value="Waste-Management">Waste Management</option>
+                                    <option value="Wholesale">Wholesale</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="Pass" class="form-label">Change Password</label>
+                                <input type="password" id="Pass" name="pass" class="form-control" minlength="8" pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,}$">
+                                <div class="form-text">Leave blank to keep current password</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if not flag %}
+    <!-- Campaigns Page -->
+    <div id="Campaigns" class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title">
+                <i class="bi bi-megaphone me-2"></i>My Campaigns
+            </h2>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCampaign">
+                <i class="bi bi-plus-circle me-1"></i> Add Campaign
+            </button>
+        </div>
+
+        {% if campaigns.items | length == 0 %}
+        <div class="empty-state">
+            <i class="bi bi-megaphone"></i>
+            <h4>No campaigns published yet</h4>
+            <p>Get started by creating your first campaign</p>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCampaign">
+                <i class="bi bi-plus-circle me-1"></i> Create Campaign
+            </button>
+        </div>
+        {% else %}
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for campaign in campaigns.items %}
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ campaign.name }}</h5>
+                        <span class="badge bg-{% if campaign.visibility == 'Public' %}primary{% else %}secondary{% endif %}">
+                                    {{ campaign.visibility }}
+                                </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                                    <span class="badge rounded-pill bg-light text-dark">
+                                        <i class="bi bi-tag me-1"></i> {{ campaign.category }}
+                                    </span>
+                            <span class="text-muted">
+                                        <i class="bi bi-calendar me-1"></i> {{ campaign.start_date }} to {{ campaign.end_date }}
+                                    </span>
+                        </div>
+
+                        <p class="card-text"><strong>Description:</strong> {{ campaign.description }}</p>
+                        <p class="card-text"><strong>Goals:</strong> {{ campaign.goals }}</p>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span><strong>Budget:</strong> ${{ campaign.budget }}</span>
+                                <span><strong>Remaining:</strong> ${{ campaign.remaining }}</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: {{ ((campaign.budget - campaign.remaining)/campaign.budget * 100)|round(2) }}%;"
+                                     aria-valuenow="{{ ((campaign.budget - campaign.remaining)/campaign.budget * 100)|round(2) }}"
+                                     aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                            <small class="text-muted">{{ ((campaign.budget - campaign.remaining)/campaign.budget * 100)|round(2) }}% spent</small>
+                        </div>
+
+                        {% if campaign.ad_requests | length == 0 %}
+                        <div class="alert alert-warning d-flex align-items-center" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <div>
+                                No Ad Requests sent yet. Campaign will not show up on search results.
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="d-flex gap-2">
+                            <a href="/campaign/{{ campaign.id }}" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-eye me-1"></i> View
+                            </a>
+                            <button type="button" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCampaign{{ campaign.id }}">
+                                <i class="bi bi-pencil me-1"></i> Edit
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteCampaign{{ campaign.id }}">
+                                <i class="bi bi-trash me-1"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Campaign Modal -->
+            <div class="modal fade" id="editCampaign{{ campaign.id }}" tabindex="-1" aria-labelledby="editCampaignLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editCampaignLabel">Edit Campaign</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" id="edit_campaign">
+                            <div class="modal-body">
+                                <input type="hidden" name="form_id" value="edit_campaign">
+                                <input type="hidden" name="id" value="{{ campaign.id }}">
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="name" class="form-label">Campaign Name</label>
+                                        <input type="text" name="name" id="name" value="{{ campaign.name }}" class="form-control" maxlength=45 required>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="category" class="form-label">Category</label>
+                                        <select id="category" name="category" class="form-select" required>
+                                            <option value="{{ campaign.category }}" selected>{{ campaign.category }}</option>
+                                            <option value="Beauty">Beauty</option>
+                                            <option value="Fashion">Fashion</option>
+                                            <option value="Fitness">Fitness</option>
+                                            <option value="Health">Health</option>
+                                            <option value="Travel">Travel</option>
+                                            <option value="Food">Food</option>
+                                            <option value="Lifestyle">Lifestyle</option>
+                                            <option value="Gaming">Gaming</option>
+                                            <option value="Technology">Technology</option>
+                                            <option value="Photography">Photography</option>
+                                            <option value="Music">Music</option>
+                                            <option value="Parenting">Parenting</option>
+                                            <option value="Finance">Finance</option>
+                                            <option value="Education">Education</option>
+                                            <option value="Sports">Sports</option>
+                                            <option value="Art">Art</option>
+                                            <option value="Home-Decor">Home Decor</option>
+                                            <option value="Pets">Pets</option>
+                                            <option value="Automotive">Automotive</option>
+                                            <option value="Books">Books</option>
+                                            <option value="DIY">DIY</option>
+                                            <option value="Environment">Environment</option>
+                                            <option value="Entertainment">Entertainment</option>
+                                            <option value="Business">Business</option>
+                                            <option value="Spirituality">Spirituality</option>
+                                            <option value="Dating">Dating</option>
+                                            <option value="Career">Career</option>
+                                            <option value="Event-Planning">Event Planning</option>
+                                            <option value="Gaming-Cosplay">Gaming Cosplay</option>
+                                            <option value="Luxury">Luxury</option>
+                                            <option value="Outdoors">Outdoors</option>
+                                            <option value="Wellness">Wellness</option>
+                                            <option value="Mental-Health">Mental Health</option>
+                                            <option value="Non-Profit">Non-Profit</option>
+                                            <option value="Comedy">Comedy</option>
+                                            <option value="News">News</option>
+                                            <option value="Personal-Development">Personal Development</option>
+                                            <option value="Relationship">Relationship</option>
+                                            <option value="Social-Justice">Social Justice</option>
+                                            <option value="Sustainable-Living">Sustainable Living</option>
+                                            <option value="Tech-Gadgets">Tech Gadgets</option>
+                                            <option value="Videography">Videography</option>
+                                            <option value="Yoga">Yoga</option>
+                                            <option value="Crypto">Crypto</option>
+                                            <option value="Investment">Investment</option>
+                                            <option value="Real-Estate">Real Estate</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Description" class="form-label">Description</label>
+                                    <textarea id="Description" name="description" class="form-control" maxlength=250 required>{{ campaign.description }}</textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Goals" class="form-label">Goals</label>
+                                    <textarea id="Goals" name="goals" class="form-control" maxlength=250 required>{{ campaign.goals }}</textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="Budget" class="form-label">Budget</label>
+                                        <input type="number" id="Budget" name="budget" value="{{ campaign.budget }}" class="form-control" min={{ campaign.budget - campaign.remaining }} pattern="^\d+$" required>
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label for="Visibility" class="form-label">Visibility</label>
+                                        <select id="Visibility" name="visibility" class="form-select" required>
+                                            <option value="Public" {% if campaign.visibility == 'Public' %}selected{% endif %}>Public</option>
+                                            <option value="Private" {% if campaign.visibility == 'Private' %}selected{% endif %}>Private</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label for="Start_date" class="form-label">Start Date</label>
+                                        <input type="date" id="Start_date" name="start_date" value="{{ campaign.start_date }}" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label for="End_date" class="form-label">End Date</label>
+                                        <input type="date" id="End_date" name="end_date" value="{{ campaign.end_date }}" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Campaign Modal -->
+            <div class="modal fade" id="deleteCampaign{{ campaign.id }}" tabindex="-1" aria-labelledby="deleteCampaignLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-danger" id="deleteCampaignLabel">Delete Campaign</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" id="delete_campaign">
+                            <div class="modal-body">
+                                <input type="hidden" name="form_id" value="delete_campaign">
+                                <input type="hidden" name="id" value="{{ campaign.id }}">
+
+                                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <div>
+                                        This action will delete the campaign and all associated ad requests.
+                                    </div>
+                                </div>
+
+                                <p>Are you sure you want to delete <strong>{{ campaign.name }}</strong>?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-danger">Delete Campaign</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Campaigns pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if campaigns.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="/sponsor?page_campaign={{ campaigns.prev_num }}">Previous</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                {% endif %}
+
+                {% for page_num in campaigns.iter_pages() %}
+                {% if page_num %}
+                {% if page_num != campaigns.page %}
+                <li class="page-item"><a class="page-link" href="/sponsor?page_campaign={{ page_num }}">{{ page_num }}</a></li>
+                {% else %}
+                <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+                {% endif %}
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if campaigns.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="/sponsor?page_campaign={{ campaigns.next_num }}">Next</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">Next</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+        <!-- Add Campaign Modal -->
+        <div class="modal fade" id="addCampaign" tabindex="-1" aria-labelledby="addCampaignLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addCampaignLabel">Create New Campaign</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="POST" id="add_campaign">
+                        <div class="modal-body">
+                            <input type="hidden" name="form_id" value="add_campaign">
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">Campaign Name</label>
+                                    <input type="text" name="name" id="name" class="form-control" required maxlength=45>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="category" class="form-label">Category</label>
+                                    <select id="category" name="category" class="form-select" required>
+                                        <option value="" disabled selected>Select a Category</option>
+                                        <option value="Beauty">Beauty</option>
+                                        <option value="Fashion">Fashion</option>
+                                        <option value="Fitness">Fitness</option>
+                                        <option value="Health">Health</option>
+                                        <option value="Travel">Travel</option>
+                                        <option value="Food">Food</option>
+                                        <option value="Lifestyle">Lifestyle</option>
+                                        <option value="Gaming">Gaming</option>
+                                        <option value="Technology">Technology</option>
+                                        <option value="Photography">Photography</option>
+                                        <option value="Music">Music</option>
+                                        <option value="Parenting">Parenting</option>
+                                        <option value="Finance">Finance</option>
+                                        <option value="Education">Education</option>
+                                        <option value="Sports">Sports</option>
+                                        <option value="Art">Art</option>
+                                        <option value="Home-Decor">Home Decor</option>
+                                        <option value="Pets">Pets</option>
+                                        <option value="Automotive">Automotive</option>
+                                        <option value="Books">Books</option>
+                                        <option value="DIY">DIY</option>
+                                        <option value="Environment">Environment</option>
+                                        <option value="Entertainment">Entertainment</option>
+                                        <option value="Business">Business</option>
+                                        <option value="Spirituality">Spirituality</option>
+                                        <option value="Dating">Dating</option>
+                                        <option value="Career">Career</option>
+                                        <option value="Event-Planning">Event Planning</option>
+                                        <option value="Gaming-Cosplay">Gaming Cosplay</option>
+                                        <option value="Luxury">Luxury</option>
+                                        <option value="Outdoors">Outdoors</option>
+                                        <option value="Wellness">Wellness</option>
+                                        <option value="Mental-Health">Mental Health</option>
+                                        <option value="Non-Profit">Non-Profit</option>
+                                        <option value="Comedy">Comedy</option>
+                                        <option value="News">News</option>
+                                        <option value="Personal-Development">Personal Development</option>
+                                        <option value="Relationship">Relationship</option>
+                                        <option value="Social-Justice">Social Justice</option>
+                                        <option value="Sustainable-Living">Sustainable Living</option>
+                                        <option value="Tech-Gadgets">Tech Gadgets</option>
+                                        <option value="Videography">Videography</option>
+                                        <option value="Yoga">Yoga</option>
+                                        <option value="Crypto">Crypto</option>
+                                        <option value="Investment">Investment</option>
+                                        <option value="Real-Estate">Real Estate</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="Description" class="form-label">Description</label>
+                                <textarea id="Description" name="description" class="form-control" required maxlength=250></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="Goals" class="form-label">Goals</label>
+                                <textarea id="Goals" name="goals" class="form-control" required maxlength=250></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="Budget" class="form-label">Budget ($)</label>
+                                    <input type="number" id="Budget" name="budget" class="form-control" required pattern="^[0-9]+" min=0>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="Visibility" class="form-label">Visibility</label>
+                                    <select id="Visibility" name="visibility" class="form-select" required>
+                                        <option value="Public" selected>Public</option>
+                                        <option value="Private">Private</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="Start_date" class="form-label">Start Date</label>
+                                    <input type="date" id="Start_date" name="start_date" class="form-control" required>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="End_date" class="form-label">End Date</label>
+                                    <input type="date" id="End_date" name="end_date" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Create Campaign</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ad Requests Page -->
+    <div id="Ad_Requests" class="mb-5">
+        <h2 class="section-title mb-4">
+            <i class="bi bi-envelope-paper me-2"></i>Ad Requests
+        </h2>
+
+        {% if ad_requests.items | length == 0 %}
+        <div class="empty-state">
+            <i class="bi bi-envelope-open"></i>
+            <h4>No Ad Requests sent yet</h4>
+            <p>Start by creating a campaign and sending ad requests to influencers</p>
+        </div>
+        {% else %}
+        <div class="row row-cols-1 g-4">
+            {% for ad_request in ad_requests.items %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ ad_request.campaign.name }}</h5>
+                        <span class="badge bg-{% if ad_request.status == 'Pending' %}warning{% elif ad_request.status == 'Accept' %}success{% else %}danger{% endif %}">
+                                    {{ ad_request.status }}{% if ad_request.status != 'Pending' %}ed{% endif %}
+                                </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                                    <span class="badge rounded-pill bg-light text-dark">
+                                        <i class="bi bi-tag me-1"></i> {{ ad_request.campaign.category }}
+                                    </span>
+                            <span class="text-muted">
+                                        <i class="bi bi-cash-coin me-1"></i> ${{ ad_request.payment_amount }}
+                                    </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6 class="text-muted">MESSAGE</h6>
+                            <p>{{ ad_request.messages }}</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6 class="text-muted">REQUIREMENTS</h6>
+                            <p>{{ ad_request.requirements }}</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6 class="text-muted">INFLUENCER</h6>
+                            {% if not ad_request.influencer %}
+                            <p class="text-danger">Not assigned</p>
+                            {% else %}
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person-circle me-2"></i>
+                                <span>{{ ad_request.influencer.name }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        {% if ad_request.negotiate and ad_request.status == "Pending" %}
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#revertAd{{ ad_request.id }}">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i> Revert
+                            </button>
+                        </div>
+                        {% elif not ad_request.negotiate and ad_request.status == "Pending" %}
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editAd{{ ad_request.id }}">
+                                <i class="bi bi-pencil me-1"></i> Edit
+                            </button>
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#withdrawAd{{ ad_request.id }}">
+                                <i class="bi bi-trash me-1"></i> Withdraw
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revert Ad Request Modal -->
+            <div class="modal fade" id="revertAd{{ ad_request.id }}" tabindex="-1" aria-labelledby="revertAdLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="revertAdLabel">Respond to Negotiation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" id="revert_ad">
+                            <div class="modal-body">
+                                <input type="hidden" name="form_id" value="revert_ad">
+                                <input type="hidden" name="id" value="{{ ad_request.id }}">
+
+                                <div class="mb-3">
+                                    <p>Would you like to accept or reject the influencer's proposal?</p>
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h6>Campaign: {{ ad_request.campaign.name }}</h6>
+                                            <p><strong>Message:</strong> {{ ad_request.messages }}</p>
+                                            <p><strong>Requirements:</strong> {{ ad_request.requirements }}</p>
+                                            <p><strong>Payment Amount:</strong> ${{ ad_request.payment_amount }}</p>
+                                            <p><strong>Influencer:</strong> {{ ad_request.influencer.name }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" name="status" value="Accept" class="btn btn-success">Accept</button>
+                                <button type="submit" name="status" value="Reject" class="btn btn-danger">Reject</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Ad Request Modal -->
+            <div class="modal fade" id="editAd{{ ad_request.id }}" tabindex="-1" aria-labelledby="editAdLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editAdLabel">Edit Ad Request</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" id="edit_ad">
+                            <div class="modal-body">
+                                <input type="hidden" name="form_id" value="edit_ad">
+                                <input type="hidden" name="id" value="{{ ad_request.id }}">
+
+                                <div class="mb-3">
+                                    <label for="Messages" class="form-label">Message</label>
+                                    <textarea name="message" id="Messages" class="form-control" maxlength=250>{{ ad_request.messages }}</textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Requirements" class="form-label">Requirements</label>
+                                    <textarea name="requirement" id="Requirements" class="form-control" maxlength=250>{{ ad_request.requirements }}</textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Payment_Amount" class="form-label">Payment Amount ($)</label>
+                                    <input type="number" name="payment_amount" id="Payment_Amount" class="form-control" value="{{ ad_request.payment_amount }}" min=0 pattern="^\d+$">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Influencer</label>
+                                    {% if not ad_request.influencer %}
+                                    <p class="text-danger">Not assigned</p>
+                                    {% else %}
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-person-circle me-2"></i>
+                                        <span>{{ ad_request.influencer.name }}</span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Withdraw Ad Request Modal -->
+            <div class="modal fade" id="withdrawAd{{ ad_request.id }}" tabindex="-1" aria-labelledby="withdrawAdLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-danger" id="withdrawAdLabel">Withdraw Ad Request</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" id="withdraw_ad">
+                            <div class="modal-body">
+                                <input type="hidden" name="form_id" value="withdraw_ad">
+                                <input type="hidden" name="id" value="{{ ad_request.id }}">
+
+                                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <div>
+                                        Are you sure you want to withdraw this ad request?
+                                    </div>
+                                </div>
+
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h6>Campaign: {{ ad_request.campaign.name }}</h6>
+                                        <p><strong>Message:</strong> {{ ad_request.messages }}</p>
+                                        <p><strong>Requirements:</strong> {{ ad_request.requirements }}</p>
+                                        <p><strong>Payment Amount:</strong> ${{ ad_request.payment_amount }}</p>
+                                        {% if not ad_request.influencer %}
+                                        <p class="text-danger"><strong>Influencer Not Assigned</strong></p>
+                                        {% else %}
+                                        <p><strong>Influencer:</strong> {{ ad_request.influencer.name }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-danger">Withdraw Request</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Ad Requests pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if ad_requests.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="/sponsor?page_ad_request={{ ad_requests.prev_num }}">Previous</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                {% endif %}
+
+                {% for page_num in ad_requests.iter_pages() %}
+                {% if page_num %}
+                {% if page_num != ad_requests.page %}
+                <li class="page-item"><a class="page-link" href="/sponsor?page_ad_request={{ page_num }}">{{ page_num }}</a></li>
+                {% else %}
+                <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+                {% endif %}
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if ad_requests.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="/sponsor?page_ad_request={{ ad_requests.next_num }}">Next</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">Next</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script>
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Activate tab based on URL hash
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.location.hash) {
+            const hash = window.location.hash;
+            const tabTrigger = document.querySelector(`[href="${hash}"]`);
+            if (tabTrigger) {
+                new bootstrap.Tab(tabTrigger).show();
+            }
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    });
+
+    // Handle modal form submissions
+    document.querySelectorAll('.modal form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+        });
+    });
+</script>
+</body>
+</html>

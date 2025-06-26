@@ -1,0 +1,33 @@
+Data with Ad Requests
+Sponsor email: michaelhubbard@example.net, password: 4h#WdUk2*4
+Sponsor email: gibbssandra@example.org, password: f@Uu0VOg2@
+Sponsor email: shannonmassey@example.com, password: ^IK&N5Re^k
+Influencer email: randall03@example.com, password: S#1SMKlft+
+Influencer email: atkinsonandrew@example.org, password: jrGwOzUl&3
+Influencer email: phillip35@example.net, password: *_BNLc%@14
+
+Data without Ad Requests
+Sponsor email: stephanie63@example.com, password: RK@9hWDbTs
+Sponsor email: davidaguilar@example.com, password: )^V^RhQuV6
+Sponsor email: tpineda@example.org, password: s!#1ZFt@^f
+Sponsor email: walkerdaniel@example.com, password: Y@$6Kd6)5)
+Sponsor email: xphillips@example.com, password: (@3bZDdm#M
+Sponsor email: sara62@example.com, password: CI*7JWfr)$
+Sponsor email: laneryan@example.org, password: *&1Dl^sjY(
+Sponsor email: qfrank@example.com, password: R$1N64AkQc
+Sponsor email: matthewwood@example.com, password: 9WjUM4Vy!_
+Sponsor email: justinschmitt@example.net, password: $1oKe2zQ2m
+Sponsor email: zochoa@example.org, password: 1PTSu+%n&O
+Admin email: cchapman@example.org, password: pd*9Gjv6a%
+Influencer email: dperez@example.com, password: !DU7Tv+r!(
+Influencer email: millsclaudia@example.net, password: &gr2Yu_3_^
+Influencer email: marvin11@example.net, password: (JmP)YUwo9
+Influencer email: arthurball@example.net, password: @m7ZbnPy)n
+Influencer email: smithrobert@example.com, password: PP1cKe$UM%
+Influencer email: greenrobert@example.net, password: )6LJEeM%JZ
+Influencer email: josephgonzalez@example.org, password: iv8+PC*Py!
+Influencer email: nathaniel48@example.net, password: B4(Z3Dml+u
+Influencer email: jordanjennifer@example.net, password: Vx^6WPn)x%
+Influencer email: gordonbryan@example.com, password: (iWbnih)6p
+Influencer email: nunezjason@example.org, password: )J0QedQHQo
+Influencer email: xpeterson@example.org, password: 0mERgNwz_b

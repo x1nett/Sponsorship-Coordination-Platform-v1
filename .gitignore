@@ -1,0 +1,6 @@
+# local env files
+.env
+
+# Pycache files
+__pycache__
+components/__pycache__

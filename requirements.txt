@@ -1,0 +1,8 @@
+Faker==26.0.0
+Flask==3.0.3
+Flask_Bcrypt==1.0.1
+Flask_Login==0.6.3
+flask_sqlalchemy==3.1.1
+matplotlib==3.8.3
+python-dotenv==1.0.1
+SQLAlchemy==2.0.31

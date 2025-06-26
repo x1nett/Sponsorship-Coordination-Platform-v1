@@ -1,0 +1,579 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Search | Influencer Connect</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            margin-top: 72px;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: white !important;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            font-size: 1.5rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background-color: #4f46e5;
+            border-color: #4f46e5;
+        }
+
+        .btn-outline-success {
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-weight: 500;
+        }
+
+        .search-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .search-title {
+            color: var(--dark-color);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .search-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-tag {
+            background-color: #e2e8f0;
+            color: var(--dark-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-tag i {
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+            background-color: #e2e8f0;
+        }
+
+        .progress-bar {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border-radius: 5px;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .pagination .page-link {
+            color: var(--primary-color);
+            border-radius: 8px;
+            margin: 0 4px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .modal-header {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .modal-title {
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 1rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.25);
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                padding: 1.5rem;
+            }
+
+            .navbar-collapse {
+                padding-top: 1rem;
+            }
+
+            .d-flex {
+                flex-direction: column;
+            }
+
+            .d-flex input, .d-flex select, .d-flex button {
+                width: 100% !important;
+                margin-bottom: 10px;
+            }
+
+            .d-flex label {
+                width: 100% !important;
+                text-align: left !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Error message display -->
+{% if "success" in error %}
+<div class="alert alert-success alert-dismissible fade show mx-3 mt-3" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i> {{ error }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% elif error %}
+<div class="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ error }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="bi bi-search me-2"></i>Search
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto">
+                {% if type == "Sponsor" %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('sponsor_dashboard') }}">
+                        <i class="bi bi-house-door me-1"></i>Home
+                    </a>
+                </li>
+                {% elif type == "Influencer" %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('influencer_dashboard') }}">
+                        <i class="bi bi-house-door me-1"></i>Home
+                    </a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">
+                        <i class="bi bi-box-arrow-right me-1"></i>Logout
+                    </a>
+                </li>
+            </ul>
+            <form class="d-flex align-items-center" method="POST">
+                <input type="hidden" name="form_id" value="search_name">
+                <div class="input-group me-2" style="width: 200px;">
+                    <span class="input-group-text bg-white" style="height: 46px"><i class="bi bi-search"></i></span>
+                    <input class="form-control" type="search" name="search" value="{{ filter_dic.name }}" placeholder="Search" aria-label="Search">
+                </div>
+                <select class="form-select me-2" name="sort" id="sort" aria-label="Sort" style="width:150px">
+                    <option value="{{ None }}" disabled selected>Sort</option>
+                    <option value="Ascending">Ascending</option>
+                    <option value="Descending">Descending</option>
+                </select>
+                <label for="Search_Type" class="me-2" style="width:120px; text-align: center;">Sort By Reach</label>
+                <select id="category" name="category" class="form-select me-2" style="width:200px">
+                    <option value="{{ None }}" disabled selected>Filter By Categories</option>
+                    <option value="Beauty">Beauty</option>
+                    <option value="Fashion">Fashion</option>
+                    <option value="Fitness">Fitness</option>
+                    <option value="Health">Health</option>
+                    <option value="Travel">Travel</option>
+                    <option value="Food">Food</option>
+                    <option value="Lifestyle">Lifestyle</option>
+                    <option value="Gaming">Gaming</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Photography">Photography</option>
+                    <option value="Music">Music</option>
+                    <option value="Parenting">Parenting</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Education">Education</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Art">Art</option>
+                    <option value="Home-Decor">Home Decor</option>
+                    <option value="Pets">Pets</option>
+                    <option value="Automotive">Automotive</option>
+                    <option value="Books">Books</option>
+                    <option value="DIY">DIY</option>
+                    <option value="Environment">Environment</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Business">Business</option>
+                    <option value="Spirituality">Spirituality</option>
+                    <option value="Dating">Dating</option>
+                    <option value="Career">Career</option>
+                    <option value="Event-Planning">Event Planning</option>
+                    <option value="Gaming-Cosplay">Gaming Cosplay</option>
+                    <option value="Luxury">Luxury</option>
+                    <option value="Outdoors">Outdoors</option>
+                    <option value="Wellness">Wellness</option>
+                    <option value="Mental-Health">Mental Health</option>
+                    <option value="Non-Profit">Non-Profit</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="News">News</option>
+                    <option value="Personal-Development">Personal Development</option>
+                    <option value="Relationship">Relationship</option>
+                    <option value="Social-Justice">Social Justice</option>
+                    <option value="Sustainable-Living">Sustainable Living</option>
+                    <option value="Tech-Gadgets">Tech Gadgets</option>
+                    <option value="Videography">Videography</option>
+                    <option value="Yoga">Yoga</option>
+                    <option value="Crypto">Crypto</option>
+                    <option value="Investment">Investment</option>
+                    <option value="Real-Estate">Real Estate</option>
+                </select>
+                <label for="category" class="me-2" style="width:100px; text-align: center;">Category</label>
+                <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-funnel-fill me-1"></i>Apply
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+    <div class="search-container">
+        <h3 class="search-title">Search Results</h3>
+
+        {% if filter_dic.name or filter_dic.sort or filter_dic.category %}
+        <div class="filter-tags">
+            {% if filter_dic.name %}
+            <span class="filter-tag">
+                        Search: {{ filter_dic.name }}
+                        <i class="bi bi-x"></i>
+                    </span>
+            {% endif %}
+            {% if filter_dic.sort %}
+            <span class="filter-tag">
+                        Sort: {{ filter_dic.sort }}
+                        <i class="bi bi-x"></i>
+                    </span>
+            {% endif %}
+            {% if filter_dic.category %}
+            <span class="filter-tag">
+                        Category: {{ filter_dic.category }}
+                        <i class="bi bi-x"></i>
+                    </span>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if type == "Sponsor" %}
+        {% if results.items | length == 0 %}
+        <div class="empty-state">
+            <i class="bi bi-people"></i>
+            <h4>No Influencers Found</h4>
+            <p class="text-muted">Try adjusting your search filters</p>
+        </div>
+        {% endif %}
+
+        <div class="row">
+            {% for influencer in results.items %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ influencer.name }}</h5>
+                        <span class="badge bg-light text-dark">{{ influencer.category }}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span class="d-block text-muted small mb-1"><i class="bi bi-envelope me-2"></i>Email</span>
+                            <p>{{ influencer.email }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <span class="d-block text-muted small mb-1"><i class="bi bi-people me-2"></i>Reach</span>
+                            <p>{{ influencer.reach }} followers</p>
+                        </div>
+                        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#requestAd{{ influencer.id }}">
+                            <i class="bi bi-send-check me-1"></i>Request Collaboration
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Send Ad Request Modal -->
+            <div class="modal fade" id="requestAd{{ influencer.id }}" tabindex="-1" role="dialog" aria-labelledby="requestAd" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <form method="POST" id="request_ad">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="requestAd">
+                                    <i class="bi bi-send-check me-2"></i>Send Collaboration Request
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="form_id" value="ad_request">
+                                <input type="hidden" name="id" value="{{ influencer.id }}">
+
+                                <div class="mb-3">
+                                    <label for="Campaign" class="form-label">Select Campaign</label>
+                                    <select class="form-select" name="campaign_id" id="Campaign" aria-label="Campaign selection" required>
+                                        {% for camp in campaign %}
+                                        <option value="{{ camp.id }}">{{ camp.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Messages" class="form-label">Your Message</label>
+                                    <textarea name="messages" id="Messages" class="form-control" rows="3" required maxlength=250></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Requirements" class="form-label">Requirements</label>
+                                    <input type="text" name="requirements" id="Requirements" class="form-control" required maxlength=250/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="Payment_Amount" class="form-label">Payment Amount ($)</label>
+                                    <input type="number" name="payment_amount" id="Payment_Amount" class="form-control" required min=0 pattern="^\d+$"/>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" name="status" class="btn btn-primary">
+                                    <i class="bi bi-send-check me-1"></i>Send Request
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% elif type == "Influencer" %}
+        {% if results.items | length == 0 %}
+        <div class="empty-state">
+            <i class="bi bi-megaphone"></i>
+            <h4>No Campaigns Found</h4>
+            <p class="text-muted">Try adjusting your search filters</p>
+        </div>
+        {% endif %}
+
+        <div class="row">
+            {% for campaign in results.items %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ campaign.name }}</h5>
+                        <span class="badge bg-light text-dark">{{ campaign.category }}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span class="d-block text-muted small mb-1"><i class="bi bi-info-circle me-2"></i>Description</span>
+                            <p>{{ campaign.description }}</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <span class="d-block text-muted small mb-1"><i class="bi bi-bullseye me-2"></i>Goals</span>
+                            <p>{{ campaign.goals }}</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <span class="d-block text-muted small mb-1"><i class="bi bi-cash-stack me-2"></i>Budget</span>
+                            <div class="d-flex justify-content-between">
+                                <span>${{ campaign.remaining }} remaining</span>
+                                <span>${{ campaign.budget }} total</span>
+                            </div>
+                            <div class="progress mt-2">
+                                <div class="progress-bar" role="progressbar" style="width: {{ ((campaign.budget - campaign.remaining)/campaign.budget * 100)|round(2) }}%;"
+                                     aria-valuenow="{{ ((campaign.budget - campaign.remaining)/campaign.budget * 100)|round(2) }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="text-end small text-muted mt-1">
+                                {{ ((campaign.budget - campaign.remaining)/campaign.budget * 100)|round(2) }}% utilized
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <span class="d-block text-muted small mb-1"><i class="bi bi-calendar-event me-2"></i>Duration</span>
+                            <p>From {{ campaign.start_date }} to {{ campaign.end_date }}</p>
+                        </div>
+
+                        <a href="/campaign/{{ campaign.id }}" class="btn btn-primary w-100">
+                            <i class="bi bi-eye me-1"></i>View Campaign
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Pagination -->
+        {% if results.pages > 1 %}
+        <nav aria-label="Search results navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if results.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="/search?page={{ results.prev_num }}&name={{ filter_dic.name }}&sort={{ filter_dic.sort }}&category={{ filter_dic.category }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-hidden="true">&laquo;</span>
+                </li>
+                {% endif %}
+
+                {% for page_num in results.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=3) %}
+                {% if page_num %}
+                {% if page_num != results.page %}
+                <li class="page-item"><a class="page-link" href="/search?page={{ page_num }}&name={{ filter_dic.name }}&sort={{ filter_dic.sort }}&category={{ filter_dic.category }}">{{ page_num }}</a></li>
+                {% else %}
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">{{ page_num }}</span>
+                </li>
+                {% endif %}
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if results.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="/search?page={{ results.next_num }}&name={{ filter_dic.name }}&sort={{ filter_dic.sort }}&category={{ filter_dic.category }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-hidden="true">&raquo;</span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Add active class to current sort option
+    document.addEventListener('DOMContentLoaded', function() {
+        const sortSelect = document.getElementById('sort');
+        const categorySelect = document.getElementById('category');
+
+        // Set selected sort option if exists
+        {% if filter_dic.sort %}
+        Array.from(sortSelect.options).forEach(option => {
+            if (option.value === "{{ filter_dic.sort }}") {
+                option.selected = true;
+            }
+        });
+        {% endif %}
+
+        // Set selected category option if exists
+        {% if filter_dic.category %}
+        Array.from(categorySelect.options).forEach(option => {
+            if (option.value === "{{ filter_dic.category }}") {
+                option.selected = true;
+            }
+        });
+        {% endif %}
+
+        // Add click handler for filter tag removal
+        document.querySelectorAll('.filter-tag i').forEach(icon => {
+            icon.addEventListener('click', function() {
+                // This would need to be implemented based on your actual filter removal logic
+                console.log('Filter removal would be implemented here');
+            });
+        });
+    });
+</script>
+</body>
+</html>

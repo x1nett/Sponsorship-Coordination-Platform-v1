@@ -1,0 +1,614 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Influencer Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #f8fafc;
+            --dark-color: #1e293b;
+            --light-color: #f1f5f9;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background-color: white !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 0.8rem 1rem;
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            color: var(--primary-color) !important;
+            font-size: 1.2rem;
+        }
+
+        .nav-link {
+            color: #64748b !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-color) !important;
+        }
+
+        .nav-link.disabled {
+            color: #cbd5e1 !important;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: 600;
+            padding: 1.25rem 1.5rem;
+            border-radius: 12px 12px 0 0 !important;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+
+        .profile-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-item {
+            background-color: var(--light-color);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.25);
+        }
+
+        .alert {
+            border-radius: 8px;
+        }
+
+        .section-title {
+            color: var(--dark-color);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        .badge-category {
+            background-color: #e0e7ff;
+            color: var(--primary-color);
+            font-weight: 500;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .pagination .page-link {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .profile-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .stat-item {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body style="margin-top:72px">
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-star me-2"></i>Influencer Dashboard
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#Profile"><i class="fas fa-user me-1"></i> Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#Ad_Requests"><i class="fas fa-bullhorn me-1"></i> Ad Requests</a>
+                </li>
+                <li class="nav-item">
+                    {% if flag %}
+                    <a class="nav-link disabled"><i class="fas fa-search me-1"></i> Find Campaigns</a>
+                    {% else %}
+                    <a class="nav-link" href="{{ url_for('search') }}"><i class="fas fa-search me-1"></i> Find Campaigns</a>
+                    {% endif %}
+                </li>
+                <li class="nav-item">
+                    {% if flag %}
+                    <a class="nav-link disabled"><i class="fas fa-chart-line me-1"></i> Stats</a>
+                    {% else %}
+                    <a class="nav-link" href="{{ url_for('stats') }}"><i class="fas fa-chart-line me-1"></i> Stats</a>
+                    {% endif %}
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt me-1"></i> Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container py-4">
+    <!-- Error message display -->
+    {% if "success" in error %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i> {{ error }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% elif error %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i> {{ error }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <!-- Flag message display -->
+    {% if flag %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-exclamation-triangle me-3 fs-4"></i>
+            <div>
+                <h5 class="alert-heading mb-1">Account Flagged</h5>
+                <p class="mb-0">You have been flagged. Kindly make the below changes before your profile can be activated again.</p>
+                <p class="mb-0"><strong>Reason:</strong> {{ flag.reason }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Profile Section -->
+    <section id="Profile" class="profile-section">
+        <div class="profile-header">
+            <div>
+                <h2 class="mb-1">Welcome back, <span class="text-primary">{{ influencer.name }}</span></h2>
+                <span class="badge-category"><i class="fas fa-tag me-1"></i> {{ influencer.category }}</span>
+            </div>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                <i class="fas fa-edit me-1"></i> Edit Profile
+            </button>
+        </div>
+
+        <div class="profile-stats">
+            <div class="stat-item">
+                <div class="stat-value">{{ ad_requests.total }}</div>
+                <div class="stat-label">Ad Requests</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{ influencer.email }}</div>
+                <div class="stat-label">Email</div>
+            </div>
+        </div>
+
+        <!-- Edit Profile Modal -->
+        <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form method="POST" id="edit_profile">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="form_id" value="edit_profile">
+
+                            <!-- Name input -->
+                            <div class="mb-3">
+                                <label for="Full_Name" class="form-label">Full Name</label>
+                                <input type="text" name="name" id="Full_Name" value="{{ influencer.name }}"
+                                       class="form-control" maxlength="45" pattern="^[\w\-\s]+$" required>
+                            </div>
+
+                            <!-- Category input -->
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select id="category" name="category" class="form-select" required>
+                                    <option value="{{ influencer.category }}" selected>{{ influencer.category }}</option>
+                                    <option value="Beauty">Beauty</option>
+                                    <option value="Fashion">Fashion</option>
+                                    <option value="Fitness">Fitness</option>
+                                    <option value="Health">Health</option>
+                                    <option value="Travel">Travel</option>
+                                    <option value="Food">Food</option>
+                                    <option value="Lifestyle">Lifestyle</option>
+                                    <option value="Gaming">Gaming</option>
+                                    <option value="Technology">Technology</option>
+                                    <option value="Photography">Photography</option>
+                                    <option value="Music">Music</option>
+                                    <option value="Parenting">Parenting</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Education">Education</option>
+                                    <option value="Sports">Sports</option>
+                                    <option value="Art">Art</option>
+                                    <option value="Home-Decor">Home Decor</option>
+                                    <option value="Pets">Pets</option>
+                                    <option value="Automotive">Automotive</option>
+                                    <option value="Books">Books</option>
+                                    <option value="DIY">DIY</option>
+                                    <option value="Environment">Environment</option>
+                                    <option value="Entertainment">Entertainment</option>
+                                    <option value="Business">Business</option>
+                                    <option value="Spirituality">Spirituality</option>
+                                    <option value="Dating">Dating</option>
+                                    <option value="Career">Career</option>
+                                    <option value="Event-Planning">Event Planning</option>
+                                    <option value="Gaming-Cosplay">Gaming Cosplay</option>
+                                    <option value="Luxury">Luxury</option>
+                                    <option value="Outdoors">Outdoors</option>
+                                    <option value="Wellness">Wellness</option>
+                                    <option value="Mental-Health">Mental Health</option>
+                                    <option value="Non-Profit">Non-Profit</option>
+                                    <option value="Comedy">Comedy</option>
+                                    <option value="News">News</option>
+                                    <option value="Personal-Development">Personal Development</option>
+                                    <option value="Relationship">Relationship</option>
+                                    <option value="Social-Justice">Social Justice</option>
+                                    <option value="Sustainable-Living">Sustainable Living</option>
+                                    <option value="Tech-Gadgets">Tech Gadgets</option>
+                                    <option value="Videography">Videography</option>
+                                    <option value="Yoga">Yoga</option>
+                                    <option value="Crypto">Crypto</option>
+                                    <option value="Investment">Investment</option>
+                                    <option value="Real-Estate">Real Estate</option>
+                                </select>
+                            </div>
+
+                            <!-- Reach input -->
+                            <div class="mb-3">
+                                <label for="Reach" class="form-label">Reach</label>
+                                <input type="number" id="Reach" name="reach" value="{{ influencer.reach | int }}"
+                                       class="form-control" min=0 required>
+                            </div>
+
+                            <!-- Password input -->
+                            <div class="mb-3">
+                                <label for="Pass" class="form-label">Change Password</label>
+                                <input type="password" id="Pass" name="pass" class="form-control"
+                                       minlength="8" pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,}$">
+                                <div class="form-text">Leave blank to keep current password</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% if not flag %}
+    <!-- Ad Requests Section -->
+    <section id="Ad_Requests">
+        <h3 class="section-title">Ad Requests</h3>
+
+        {% if ad_requests.items | length == 0 %}
+        <div class="text-center py-5">
+            <i class="fas fa-bullhorn fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No Ad Requests Received Yet</h5>
+            <p class="text-muted">When brands send you ad requests, they'll appear here.</p>
+        </div>
+        {% else %}
+        <div class="row">
+            {% for ad_request in ad_requests.items %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ ad_request.campaign.name }}</h5>
+                        <a href="{{ url_for('campaign', id=ad_request.campaign_id) }}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-external-link-alt me-1"></i> View Campaign
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h6 class="text-muted mb-2"><i class="fas fa-comment me-1"></i> Messages</h6>
+                            <p>{{ ad_request.messages }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <h6 class="text-muted mb-2"><i class="fas fa-tasks me-1"></i> Requirements</h6>
+                            <p>{{ ad_request.requirements }}</p>
+                        </div>
+                        <div class="mb-4">
+                            <h6 class="text-muted mb-2"><i class="fas fa-dollar-sign me-1"></i> Payment Amount</h6>
+                            <h5 class="text-success">${{ ad_request.payment_amount }}</h5>
+                        </div>
+                        {% if not ad_request.negotiate %}
+                        <div class="d-flex gap-2">
+                            <!-- Accept Button -->
+                            <button type="button" class="btn btn-success flex-grow-1 open-universal-modal"
+                                data-bs-toggle="modal" data-bs-target="#universalAdModal"
+                                data-type="accept"
+                                data-id="{{ ad_request.id }}"
+                                data-campaign="{{ ad_request.campaign.name }}"
+                                data-payment="{{ ad_request.payment_amount }}">
+                                <i class="fas fa-check me-1"></i> Accept
+                            </button>
+                            <!-- Negotiate Button -->
+                            <button type="button" class="btn btn-info flex-grow-1 open-universal-modal"
+                                data-bs-toggle="modal" data-bs-target="#universalAdModal"
+                                data-type="negotiate"
+                                data-id="{{ ad_request.id }}"
+                                data-campaign="{{ ad_request.campaign.name }}"
+                                data-payment="{{ ad_request.payment_amount }}">
+                                <i class="fas fa-exchange-alt me-1"></i> Negotiate
+                            </button>
+                            <!-- Reject Button -->
+                            <button type="button" class="btn btn-outline-danger open-universal-modal"
+                                data-bs-toggle="modal" data-bs-target="#universalAdModal"
+                                data-type="reject"
+                                data-id="{{ ad_request.id }}"
+                                data-campaign="{{ ad_request.campaign.name }}"
+                                data-payment="{{ ad_request.payment_amount }}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        {% elif ad_request.status == "Pending" %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-clock me-2"></i> <strong>Status:</strong> {{ ad_request.status }} - Waiting for brand response
+                        </div>
+                        {% else %}
+                        <div class="alert alert-{{ 'success' if ad_request.status == 'Accept' else 'danger' }}">
+                            <i class="fas fa-{{ 'check-circle' if ad_request.status == 'Accept' else 'times-circle' }} me-2"></i>
+                            <strong>Status:</strong> {{ ad_request.status }}ed
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if ad_requests.pages > 1 %}
+        <nav aria-label="Ad requests pagination">
+            <ul class="pagination justify-content-center">
+                {% if ad_requests.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="/influencer?page={{ ad_requests.prev_num }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-hidden="true">&laquo;</span>
+                </li>
+                {% endif %}
+
+                {% for page_num in ad_requests.iter_pages() %}
+                {% if page_num %}
+                {% if page_num != ad_requests.page %}
+                <li class="page-item"><a class="page-link" href="/influencer?page={{ page_num }}">{{ page_num }}</a></li>
+                {% else %}
+                <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+                {% endif %}
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if ad_requests.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="/influencer?page={{ ad_requests.next_num }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-hidden="true">&raquo;</span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        {% endif %}
+    </section>
+    {% endif %}
+</div>
+
+<!-- Universal Ad Modal -->
+<div class="modal fade" id="universalAdModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" id="universal_ad_form">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="universalAdModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="universalAdModalBody"></div>
+                <div class="modal-footer" id="universalAdModalFooter"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Activate tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Format numbers with commas
+    function formatNumber(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // Apply formatting to all stat values
+    document.querySelectorAll('.stat-value').forEach(function(el) {
+        if(!isNaN(el.textContent)) {
+            el.textContent = formatNumber(el.textContent);
+        }
+    });
+
+    document.querySelectorAll('.open-universal-modal').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var type = this.getAttribute('data-type');
+            var id = this.getAttribute('data-id');
+            var campaign = this.getAttribute('data-campaign');
+            var payment = this.getAttribute('data-payment');
+            var form = document.getElementById('universal_ad_form');
+            // Повністю перезаписуємо форму для чистоти
+            form.innerHTML = `
+                <div class="modal-header">
+                    <h5 class="modal-title" id="universalAdModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="universalAdModalBody"></div>
+                <div class="modal-footer" id="universalAdModalFooter"></div>
+            `;
+            var modalLabel = document.getElementById('universalAdModalLabel');
+            var modalBody = document.getElementById('universalAdModalBody');
+            var modalFooter = document.getElementById('universalAdModalFooter');
+            // Додаємо приховані поля
+            var hiddenId = document.createElement('input');
+            hiddenId.type = 'hidden';
+            hiddenId.name = 'id';
+            hiddenId.value = id;
+            form.appendChild(hiddenId);
+            if(type === 'accept') {
+                modalLabel.textContent = 'Accept Ad Request';
+                modalBody.innerHTML = '<div class="alert alert-info"><i class="fas fa-info-circle me-2"></i> Are you sure you want to accept this ad request?</div>' +
+                    '<div class="mb-3"><label class="form-label">Campaign</label><input type="text" class="form-control" value="' + campaign + '" readonly></div>' +
+                    '<div class="mb-3"><label class="form-label">Payment Amount</label><input type="text" class="form-control" value="$' + payment + '" readonly></div>';
+                modalFooter.innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>' +
+                    '<button type="submit" name="status" value="Accept" class="btn btn-success"><i class="fas fa-check me-1"></i> Confirm Acceptance</button>';
+                var hiddenFormId = document.createElement('input');
+                hiddenFormId.type = 'hidden';
+                hiddenFormId.name = 'form_id';
+                hiddenFormId.value = 'revert_ad';
+                form.appendChild(hiddenFormId);
+            } else if(type === 'reject') {
+                modalLabel.textContent = 'Reject Ad Request';
+                modalBody.innerHTML = '<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i> Are you sure you want to reject this ad request?</div>' +
+                    '<div class="mb-3"><label class="form-label">Campaign</label><input type="text" class="form-control" value="' + campaign + '" readonly></div>';
+                modalFooter.innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>' +
+                    '<button type="submit" name="status" value="Reject" class="btn btn-danger"><i class="fas fa-times me-1"></i> Confirm Rejection</button>';
+                var hiddenFormId = document.createElement('input');
+                hiddenFormId.type = 'hidden';
+                hiddenFormId.name = 'form_id';
+                hiddenFormId.value = 'revert_ad';
+                form.appendChild(hiddenFormId);
+            } else if(type === 'negotiate') {
+                modalLabel.textContent = 'Negotiate Ad Request';
+                modalBody.innerHTML = '<div class="mb-3"><label class="form-label">Campaign</label><input type="text" class="form-control" value="' + campaign + '" readonly></div>' +
+                    '<div class="mb-3"><label class="form-label">Current Offer</label><input type="text" class="form-control" value="$' + payment + '" readonly></div>' +
+                    '<div class="mb-3"><label for="Payment_Amount" class="form-label">Your Counter Offer</label><div class="input-group"><span class="input-group-text">$</span><input type="number" id="Payment_Amount" name="payment_amount" value="' + payment + '" class="form-control" required></div></div>';
+                modalFooter.innerHTML = '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>' +
+                    '<button type="submit" name="status" class="btn btn-primary"><i class="fas fa-paper-plane me-1"></i> Send Counter Offer</button>';
+                var hiddenFormId = document.createElement('input');
+                hiddenFormId.type = 'hidden';
+                hiddenFormId.name = 'form_id';
+                hiddenFormId.value = 'negotiate_ad';
+                form.appendChild(hiddenFormId);
+            }
+        });
+    });
+</script>
+</body>
+</html>
